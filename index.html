@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <title>websocket-example</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container" style="width: 80%; margin: 100px auto;">
+        <div class="info-operation">
+          <el-button @click="start">开始</el-button>
+          <el-button @click="end">结束</el-button>
+        </div>
+        <div class="info-table" style="margin-top: 20px;">
+          <el-table
+            :data="tableData"
+            style="font-size: 16px; font-weight: 800;"
+          >
+            <el-table-column prop="name" label="名称"> </el-table-column>
+            <el-table-column label="价格">
+              <template slot-scope="scope">
+                <span>{{ scope.row.price.toFixed(2) }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </div>
+    <script>
+      const vm = new Vue({
+        el: '#app',
+        data: {
+          stock_request: {
+            stocks: ['AAPL', 'BILI', 'BABA', 'JD', 'PDD', 'TSLA'],
+          },
+          tableData: [
+            {
+              name: 'APPLE',
+              price: 115,
+            },
+            {
+              name: 'BILI',
+              price: 25,
+            },
+            {
+              name: 'BABA',
+              price: 105,
+            },
+            {
+              name: 'JD',
+              price: 35,
+            },
+            {
+              name: 'PDD',
+              price: 65,
+            },
+            {
+              name: 'TSLA',
+              price: 87,
+            },
+          ],
+        },
+        methods: {
+          start() {
+            vm.ws = new WebSocket('ws://localhost:8082')
+            vm.ws.onopen = function (e) {
+              console.log('Connection to server opened')
+              vm.ws.send(JSON.stringify(vm.stock_request))
+              console.log('sened a mesg')
+            }
+            vm.ws.onmessage = function (e) {
+              vm.tableData = JSON.parse(e.data)
+              console.log(vm.tableData)
+            }
+          },
+          end() {
+            this.ws.close()
+          },
+        },
+      })
+    </script>
+  </body>
+</html>

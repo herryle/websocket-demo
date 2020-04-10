@@ -38,13 +38,16 @@ wss.on('connection', function (ws) {
     console.log(stockRequest)
   })
 
-  setInterval(function () {
+  const clientStockUpdater = setInterval(function () {
     for (let i in stocks) {
       const price = stocks[i].price
       console.log(price)
       stocks[i].price += randomInterval(-100, 100)
-
       ws.send(JSON.stringify(stocks))
     }
   }, 1000)
+
+  ws.on('close', function () {
+    clearInterval(clientStockUpdater)
+  })
 })
