@@ -1,0 +1,16 @@
+{
+  "name": "websocket-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node  server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "'herrylee' <'herryle93@gmail.com'>",
+  "license": "'MIT'",
+  "dependencies": {
+    "ws": "^7.2.3"
+  }
+}
