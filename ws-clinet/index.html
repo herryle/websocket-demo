@@ -20,11 +20,11 @@
         </div>
         <div class="info-table" style="margin-top: 20px;">
           <el-table
-            :data="tableData"
+            :data="stockData"
             style="font-size: 16px; font-weight: 800;"
           >
-            <el-table-column prop="name" label="名称"> </el-table-column>
-            <el-table-column label="价格">
+            <el-table-column prop="name" label="name"> </el-table-column>
+            <el-table-column label="price">
               <template slot-scope="scope">
                 <span>{{ scope.row.price.toFixed(2) }}</span>
               </template>
@@ -40,7 +40,7 @@
           stock_request: {
             stocks: ['AAPL', 'BILI', 'BABA', 'JD', 'PDD', 'TSLA'],
           },
-          tableData: [
+          stockData: [
             {
               name: 'APPLE',
               price: 115,
@@ -69,18 +69,23 @@
         },
         methods: {
           start() {
+            //连接webscoekt
             vm.ws = new WebSocket('ws://localhost:8082')
+            //打开websocket
             vm.ws.onopen = function (e) {
               console.log('Connection to server opened')
-              vm.ws.send(JSON.stringify(vm.stock_request))
+              //发送消息
+              const stockName = vm.ws.send(JSON.stringify(vm.stockData))
               console.log('sened a mesg')
             }
+            //收到服务器返回消息
             vm.ws.onmessage = function (e) {
-              vm.tableData = JSON.parse(e.data)
-              console.log(vm.tableData)
+              //解析data
+              vm.stockData = JSON.parse(e.data)
             }
           },
           end() {
+            //关闭websocket
             this.ws.close()
           },
         },
